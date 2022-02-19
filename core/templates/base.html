@@ -558,7 +558,7 @@ ul {
     
             <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
               <li><a href="{% url 'base' %}" class="nav-link px-2 text-secondary">Главная</a></li>
-              <li><a href="" class="nav-link px-2 text-white">Продукты</a></li>
+              <li><a href="#products" class="nav-link px-2 text-white">Продукты</a></li>
               <li><a href="{% url 'cart' %}" class="nav-link px-2 text-white">Корзина</a></li>
               <li><a href="{% url 'about' %}" class="nav-link px-2 text-white">О нас</a></li>
               <li><a href="#" class="nav-link px-2 text-white"></a></li>
@@ -570,8 +570,8 @@ ul {
             </form>
     
             <div class="text-end">
-              <button type="button" class="btn btn-outline-light me-2">Login</button>
-              <button type="button" class="btn btn-warning">Sign-up</button>
+              <button type="button" class="btn btn-outline-light me-2">Войти</button>
+              <a href="{% url 'signup' %}" type="button" class="btn btn-warning">Регистрация</a>
             </div>
           </div>
         </div>

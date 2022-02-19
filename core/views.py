@@ -1,3 +1,4 @@
+from email import message
 from multiprocessing import context
 from re import S
 from unicodedata import category
@@ -6,6 +7,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from core.models import FoodCard, Category, ProductsCart
 from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
 
 
 # Create your views here.
@@ -28,17 +30,12 @@ def product(request, id):
     one_type_categories = FoodCard.objects.all().filter(category=foodcard.category)
     return render(request, 'product.html', {'foodcard':foodcard, 'one_type_categories':one_type_categories})
 
-cart_products = []
-res = {}
+
 def addCard(request, pk):
     cart_session = request.session.get('cart_session', [])
-    print(cart_session)
-    
-    cart_products.append(pk)
-    products_Cart = FoodCard.objects.filter(id__in=cart_products)
-    return HttpResponseRedirect('/')
-    print(cart_products)
-    print(products_Cart)
+    cart_session.append(pk)
+    request.session['cart_session'] = cart_session
+    return redirect('base')
     # for i in products_Cart:
     #     p_name = i.name
     #     p_count = cart_products.count(i.id)
@@ -77,29 +74,26 @@ def addCard(request, pk):
 def cart(request):
     cart_session = request.session.get('cart_session', [])
     count_of_product = len(cart_session)
-    products_Cart = FoodCard.objects.filter(id__in=cart_products)
+    products_cart = FoodCard.objects.filter(id__in=cart_session)
     all_products_sum = 0
-    for i in products_Cart:
-        i.count = cart_products.count(i.id)
-        i.sum = cart_products.count(i.id) * i.price
+    for i in products_cart:
+        i.count = cart_session.count(i.id)
+        i.sum = i.count * i.price
         all_products_sum += i.sum   
-        count_of_product += i.count
-    context = {
-        'products_Cart':products_Cart,
-        'all_products_sum':all_products_sum,
-        'count_of_product':count_of_product
-    }
-    return render(request, 'cart.html', context=context)
+
+    return render(request, 'cart.html', {'products':products_cart,
+                                         'all_products_sum':all_products_sum,
+                                         'count_of_product':count_of_product})
 
 
 def removeCart(request,id):
-    cart_session = request.session.get('cart_session', [])
-    print(cart_session)
-    carts = []
-    for i in cart_session:
-        if id != i:
-            carts.append(i)
-    request.session['cart_session'] = carts
+    cart = request.session.get('cart_session', [])
+    new_cart = []
+    for pk in cart:
+        if pk != id:
+            new_cart.append(pk)
+
+    request.session['cart_session'] = new_cart
     return redirect('cart')
 
 
@@ -123,3 +117,21 @@ def search(request):
 
 
 
+def signup(request):
+    if request.method == 'POST':
+        user = UserCreationForm(request.POST)
+        if user.is_valid():
+            user.save()
+            return redirect('base')
+
+
+    else:
+        user = UserCreationForm()
+
+    return render(request, 'auth.html', {'user':user})
+
+def signin(request):
+    return render 
+
+def signout(request):
+    return render 

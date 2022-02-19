@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from core.views import base, product, addCard, cart, removeCart, about, search 
+from core.views import base, product, addCard, cart, removeCart, about, search, signin, signup, signout
 from food_delivery.settings import MEDIA_ROOT, MEDIA_URL
 from django.conf.urls.static import static
 
@@ -28,6 +28,9 @@ urlpatterns = [
     path('about', about, name='about'),
     path('search', search, name='search'),
     path('removeCart/<int:id>', removeCart, name='removeCart'),
+    path('signup', signup, name='signup'),
+    path('signin', signin, name='signin'),
+    path('signout', signout, name='signout'),
     path('admin/', admin.site.urls),
 ]
 
