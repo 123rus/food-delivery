@@ -1,5 +1,5 @@
 from email import message
-from multiprocessing import context
+from multiprocessing import AuthenticationError, context
 from re import S
 from unicodedata import category
 from xxlimited import foo
@@ -7,7 +7,8 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from core.models import FoodCard, Category, ProductsCart
 from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth import login, authenticate, logout
 
 
 # Create your views here.
@@ -36,38 +37,6 @@ def addCard(request, pk):
     cart_session.append(pk)
     request.session['cart_session'] = cart_session
     return redirect('base')
-    # for i in products_Cart:
-    #     p_name = i.name
-    #     p_count = cart_products.count(i.id)
-    #     p_price = i.price
-    #     p_description = i.description
-    #     total_sum = cart_products.count(i.id) * i.price
-    #     context = {
-    #         'p_name':p_name,
-    #         'p_count':p_count,
-    #         'p_price':p_price,
-    #         'p_description':p_description,
-    #         'total_sum':total_sum,
-    #         'products_Cart':products_Cart
-    #     }
-
-    # print('sd',res[pk])
-    # product = FoodCard.objects.get(id=pk)
-    # product_cart = ProductsCart()
-    # # product_cart.user = User.last_name
-    # product_cart.product = product.name
-    # product_cart.photo = product.image.url
-    # product_cart.price = product.price
-    # # for i in cart_products:
-    # #     if i in res:
-    # #         res[i] += 1
-    # #     else:
-    # #         res[i] = 1
-    # print(cart_products)
-    # product_cart.count = res[pk]
-    # product_cart.total_sum = product_cart.price * product_cart.count
-    # product_cart.save()
-    # print(product)
 
 
 
@@ -131,7 +100,23 @@ def signup(request):
     return render(request, 'auth.html', {'user':user})
 
 def signin(request):
-    return render 
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        
+        if user is not None:
+            login(request,user)
+            return redirect('base')
+    else:
+        form = AuthenticationForm()
+
+    return render(request, 'auth.html', {'user':form})
 
 def signout(request):
-    return render 
+    logout(request)
+    return redirect('base')
+
+
+def order(request):
+    pass
