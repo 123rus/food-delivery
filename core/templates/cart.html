@@ -65,9 +65,27 @@
           </div>
       </div>
       <div class="row mt-4 d-flex align-items-center">
+        <div class="col-sm-6 order-md-2 text-align">
         <a type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
             Оформить заказ
-          </a>         
+          </a>  
+        </div> 
+          {% if messages %}
+          {% for message in messages %} 
+          <div class="alert alert-{{ message.extra_tags }} d-flex align-items-center" role="alert">
+            <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill"/></svg>
+            <div>
+              {{message}}
+            </div>
+          </div>
+          {% endfor %}
+          {% endif %}
+
+
+
+
+
+
           <div class="col-sm-6 mb-3 mb-m-1 order-md-1 text-md-left">
               <a href="{% url 'base' %}">
                   <i class="fas fa-arrow-left mr-2"></i> Продолжить покупки</a>
@@ -85,11 +103,11 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+          <h5 class="modal-title" id="exampleModalLabel">Данные заказчика</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-            <form action="{% url 'order' %}">
+            <form action="{% url 'order' %}" method="POST">
                 {% csrf_token %}
                 <div class="mb-3">
                   <input type="text" class="form-control" placeholder="Ваше имя" required id="recipient-name" name="c_name">
@@ -105,13 +123,13 @@
                   </div>
                 <div class="mb-3">
                   <label for="message-text" class="col-form-label">Сообщение:</label>
-                  <textarea class="form-control" id="message-text"></textarea>
+                  <textarea class="form-control" name="c_message" id="message-text"></textarea>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отменить</button>
+                  <button type="submit" class="btn btn-primary">Заказать!</button>
                 </div>
               </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
-          <button type="button" class="btn btn-primary">Заказать!</button>
         </div>
       </div>
     </div>
